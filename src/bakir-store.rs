@@ -1,50 +1,73 @@
 use std::process::Command;
 use std::env;
+use std::io::{self, Write};
 
 fn main() {
     let args: Vec<String> = env::args().collect();
-    let repo_raw = "https://raw.githubusercontent.com/abuhussen/Bakir-Core/main/remote-repo";
-    let api_url = "https://api.github.com/repos/abuhussen/Bakir-Core/contents/remote-repo";
-
-    if args.len() == 1 {
-        println!("📡 رادار Bakir Linux | فحص المخزن السحابي...");
-        println!("------------------------------------------");
-
-        let output = Command::new("curl")
-            .arg("-s")
-            .arg("-L")
-            .arg("-H")
-            .arg("User-Agent: bakir-terminal")
-            .arg(api_url)
-            .output()
-            .expect("فشل الاتصال");
-
-        let body = String::from_utf8_lossy(&output.stdout);
-        
-        // طريقة أكثر ذكاءً لاستخراج الأسماء
-        for line in body.split(',') {
-            if line.contains("\"name\":") {
-                let name = line.split(":").last().unwrap_or("").trim_matches(|c| c == '"' || c == ' ' || c == '}');
-                if !name.is_empty() && name != "bakir-store" {
-                    println!("📦 أداة متاحة: {}", name);
-                }
-            }
-        }
-        
-        println!("------------------------------------------");
-        println!("🚀 للتحميل: bakir-store -i [اسم_الأداة]");
+    if args.len() < 3 {
+        display_help();
         return;
     }
 
-    if args[1] == "-i" && args.len() > 2 {
-        let tool = &args[2];
-        let target = format!("/usr/bin/{}", tool);
-        let url = format!("{}/{}", repo_raw, tool);
-        println!("📥 جاري سحب [{}]...", tool);
-        let status = Command::new("sudo").args(&["wget", "-q", "--show-progress", "-O", &target, &url]).status().expect("فشل");
-        if status.success() {
-            Command::new("sudo").args(&["chmod", "+x", &target]).status().unwrap();
-            println!("✅ تم التثبيت: [{}]", tool);
-        }
+    let action = &args[1];
+    let package = &args[2];
+
+    match action.as_str() {
+        "-i" | "--install" => install_logic(package),
+        _ => display_help(),
+    }
+}
+
+fn display_help() {
+    println!("🏪 متجر باكير الذكي | Bakir Store");
+    println!("----------------------------------");
+    println!("الاستخدام: bakir-store -i [اسم_البرنامج]");
+    println!("\n📦 البرامج المتوفرة:");
+    println!("  [أدوات سيادية]: bakir-shield, bakir-get, bakir-opt");
+    println!("  [أدوات عالمية]: timeshift, vlc, stacer");
+}
+
+fn install_logic(pkg: &str) {
+    match pkg {
+        // فئة الأدوات السيادية (تحميل من GitHub)
+        "bakir-shield" | "bakir-get" | "bakir-opt" => {
+            println!("🛡️ جاري جلب الأداة السيادية [{}] من مستودع باكير...", pkg);
+            install_sovereign(pkg);
+        },
+        // فئة الأدوات العالمية (جلب من مستودعات Debian)
+        "timeshift" | "vlc" | "stacer" => {
+            println!("🌐 جاري جلب [{}] من مستودعات Debian الرسمية...", pkg);
+            install_global(pkg);
+        },
+        _ => println!("❌ البرنامج [{}] غير مدرج في قائمة المتجر حالياً.", pkg),
+    }
+}
+
+fn install_sovereign(name: &str) {
+    let url = format!("https://raw.githubusercontent.com/abuhussen/Bakir-Core/main/remote-repo/{}", name);
+    let dest = format!("/usr/bin/{}", name);
+
+    let status = Command::new("sudo")
+        .args(&["wget", "-q", "--show-progress", &url, "-O", &dest])
+        .status()
+        .expect("فشل في تحميل الأداة");
+
+    if status.success() {
+        Command::new("sudo").args(&["chmod", "+x", &dest]).status().unwrap();
+        println!("✅ تم تنصيب الأداة السيادية [{}] بنجاح في /usr/bin", name);
+    }
+}
+
+fn install_global(name: &str) {
+    // تحديث المستودعات قبل الجلب لضمان أحدث نسخة
+    let _ = Command::new("sudo").args(&["apt", "update", "-y"]).status();
+    
+    let status = Command::new("sudo")
+        .args(&["apt", "install", "-y", name])
+        .status()
+        .expect("فشل في الاتصال بمستودعات Debian");
+
+    if status.success() {
+        println!("✅ تم تنصيب البرنامج العالمي [{}] بنجاح عبر نظام الحزم.", name);
     }
 }
