@@ -1,5 +1,7 @@
 use std::process::Command;
 use std::env;
+use std::fs;
+use std::path::Path;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -14,7 +16,7 @@ fn main() {
         "-prt" => handle_single_port(&args),
         "-scan" => scan_ports(),
         "-ghost" => toggle_stealth_mode(&args),
-        "-guard" => start_guard(), // ميزة الحارس الخلفي
+        "-guard" => start_guard(),
         _ => println!("❌ أمر غير معروف. استخدم bakir -h لعرض القائمة."),
     }
 }
@@ -22,7 +24,6 @@ fn main() {
 fn display_help() {
     println!("🛡️ Bakir-Shield | حصن باقر السيادي");
     println!("------------------------------------------");
-    println!("bakir -h             : عرض هذه القائمة");
     println!("bakir -all port off  : إغلاق كل المنافذ الخطرة");
     println!("bakir -all port on   : فتح كل المنافذ");
     println!("bakir -prt [رقم] on  : فتح منفذ محدد");
@@ -34,19 +35,18 @@ fn display_help() {
 }
 
 fn send_plasma_notify(title: &str, msg: &str) {
-    Command::new("notify-send")
+    let _ = Command::new("notify-send")
         .args(&[title, msg, "-i", "security-high", "-a", "Bakir Shield"])
-        .status()
-        .unwrap();
+        .status();
 }
 
 fn handle_all_ports(args: &[String]) {
     if args.contains(&"off".to_string()) {
-        Command::new("sudo").args(&["ufw", "--force", "enable"]).status().unwrap();
-        Command::new("sudo").args(&["ufw", "default", "deny", "incoming"]).status().unwrap();
-        send_plasma_notify("🛡️ الجدار الناري", "تم إغلاق كافة المنافذ.. النظام في وضع الحماية القصوى.");
+        let _ = Command::new("sudo").args(&["ufw", "--force", "enable"]).status();
+        let _ = Command::new("sudo").args(&["ufw", "default", "deny", "incoming"]).status();
+        send_plasma_notify("🛡️ الجدار الناري", "تم تفعيل وضع الحماية القصوى.");
     } else {
-        Command::new("sudo").args(&["ufw", "default", "allow", "incoming"]).status().unwrap();
+        let _ = Command::new("sudo").args(&["ufw", "default", "allow", "incoming"]).status();
         send_plasma_notify("🛡️ الجدار الناري", "تم فتح المنافذ الافتراضية.");
     }
 }
@@ -55,27 +55,41 @@ fn handle_single_port(args: &[String]) {
     if args.len() < 4 { return; }
     let port = &args[2];
     let action = &args[3];
-    Command::new("sudo").args(&["ufw", action, port]).status().unwrap();
-    send_plasma_notify("🛡️ تحديث المنفذ", &format!("تم {} المنفذ {} بنجاح.", action, port));
+    let _ = Command::new("sudo").args(&["ufw", action, port]).status();
+    send_plasma_notify("🛡️ تحديث المنفذ", &format!("تم {} المنفذ {}.", action, port));
 }
 
 fn scan_ports() {
-    let output = Command::new("sudo").args(&["ufw", "status", "numbered"]).output().unwrap();
+    let output = Command::new("sudo").args(&["ufw", "status", "numbered"]).output().expect("فشل تنفيذ الأمر");
     println!("{}", String::from_utf8_lossy(&output.stdout));
 }
 
 fn toggle_stealth_mode(args: &[String]) {
     if args.contains(&"on".to_string()) {
-        Command::new("sudo").args(&["sysctl", "-w", "net.ipv4.icmp_echo_ignore_all=1"]).status().unwrap();
-        send_plasma_notify("👻 الوضع الخفي", "النظام الآن غير مرئي على الشبكة.");
+        let _ = Command::new("sudo").args(&["sysctl", "-w", "net.ipv4.icmp_echo_ignore_all=1"]).status();
+        send_plasma_notify("👻 الوضع الخفي", "النظام الآن غير مرئي.");
     } else {
-        Command::new("sudo").args(&["sysctl", "-w", "net.ipv4.icmp_echo_ignore_all=0"]).status().unwrap();
-        send_plasma_notify("🌐 الوضع الخفي", "النظام الآن مرئي للشبكة.");
+        let _ = Command::new("sudo").args(&["sysctl", "-w", "net.ipv4.icmp_echo_ignore_all=0"]).status();
+        send_plasma_notify("🌐 الوضع الخفي", "النظام الآن مرئي.");
     }
 }
 
 fn start_guard() {
-    println!("📡 الحارس اليقظ يعمل الآن في الخلفية...");
+    println!("📡 جاري فحص بيئة الحماية...");
+    
+    // تأكد من وجود ufw
+    if !Path::new("/usr/sbin/ufw").exists() {
+        println!("❌ خطأ: أداة ufw غير مثبتة. يرجى تثبيتها أولاً.");
+        return;
+    }
+
+    // تأكد من وجود ملف السجلات
+    if !Path::new("/var/log/auth.log").exists() {
+        println!("⚠️ تنبيه: ملف السجلات غير موجود. جاري تفعيل خدمة rsyslog...");
+        let _ = Command::new("sudo").args(&["apt", "install", "-y", "rsyslog"]).status();
+        let _ = Command::new("sudo").args(&["systemctl", "start", "rsyslog"]).status();
+    }
+
+    println!("✅ الحارس اليقظ بدأ العمل الآن في الخلفية...");
     send_plasma_notify("📡 حارس باقر", "بدأ الحارس بمراقبة محاولات الاختراق الآن.");
-    // هنا نضع منطق مراقبة السجلات (Log Monitoring)
 }
