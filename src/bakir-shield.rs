@@ -1,7 +1,6 @@
 use std::process::{Command, Stdio};
 use std::env;
 use std::path::Path;
-use std::io::{self, Write};
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -13,7 +12,7 @@ fn main() {
 
     match args[1].as_str() {
         "-all" => handle_all_ports(&args),
-        "-prt" | "-port" => handle_single_port(&args),
+        "-port" => handle_single_port(&args),
         "-scan" => scan_ports(),
         "-ghost" => toggle_stealth_mode(&args),
         "-guard" => start_guard(),
@@ -24,11 +23,13 @@ fn main() {
 fn display_help() {
     println!("🛡️ حصن باكير السيادي | Bakir-Shield");
     println!("------------------------------------------");
-    println!("bakir -all [on/off]        : فتح أو إغلاق شامل للمنافذ");
-    println!("bakir -port [الرقم] [on/off] : التحكم بمنفذ محدد (فتح/إغلاق)");
-    println!("bakir -scan                : عرض جدول المنافذ التفصيلي");
-    println!("bakir -ghost [on/off]      : وضع الشبح (إخفاء الـ Ping)");
-    println!("bakir -guard               : تفعيل الحارس اليقظ ومراقبته");
+    println!("bakir -all on            : فتح شامل لكافة المنافذ");
+    println!("bakir -all off           : إغلاق شامل لكافة المنافذ");
+    println!("bakir -port [الرقم] on   : فتح منفذ محدد (مثال: -port 80 on)");
+    println!("bakir -port [الرقم] of   : إغلاق منفذ محدد (مثال: -port 80 of)");
+    println!("bakir -scan              : عرض جدول المنافذ التفصيلي");
+    println!("bakir -ghost [on/off]    : وضع الشبح (إخفاء الـ Ping)");
+    println!("bakir -guard             : تفعيل الحارس اليقظ ومراقبته");
     println!("------------------------------------------");
 }
 
@@ -37,7 +38,6 @@ fn handle_all_ports(args: &[String]) {
     println!("🛡️ جاري تغيير السياسة العامة إلى: {}...", action);
     let _ = Command::new("sudo").args(&["ufw", "default", action, "incoming"]).status();
     let _ = Command::new("sudo").args(&["ufw", "--force", "enable"]).status();
-    println!("✅ تم تحديث السياسة العامة للحصن.");
 }
 
 fn handle_single_port(args: &[String]) {
@@ -56,13 +56,11 @@ fn handle_single_port(args: &[String]) {
 }
 
 fn scan_ports() {
-    println!("📊 فحص المنافذ في حصن باكير...");
-    // استخدام Stdio لجلب البيانات وعرضها فوراً
-    let output = Command::new("sudo")
+    println!("📊 جاري فحص المنافذ في حصن باكير...");
+    let _ = Command::new("sudo")
         .args(&["ufw", "status", "numbered"])
-        .stdout(Stdio::inherit()) // هذا السطر سيجعل الجدول يظهر أمامك مباشرة
-        .output()
-        .expect("فشل في عرض البيانات");
+        .stdout(Stdio::inherit())
+        .output();
 }
 
 fn toggle_stealth_mode(args: &[String]) {
@@ -73,10 +71,6 @@ fn toggle_stealth_mode(args: &[String]) {
 
 fn start_guard() {
     println!("📡 جاري تشغيل الحارس اليقظ لباكير...");
-    // فحص rsyslog والتأكد من تفعيله
     let _ = Command::new("sudo").args(&["systemctl", "enable", "--now", "rsyslog"]).status();
-    
-    // إرسال رسالة تأكيد للمستخدم
     println!("🛡️ الحارس بدأ العمل ومراقبة السجلات الآن بنجاح.");
-    println!("ℹ️ يمكنك متابعة السجلات عبر: sudo tail -f /var/log/auth.log");
 }
