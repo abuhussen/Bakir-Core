@@ -1,6 +1,5 @@
 use std::process::Command;
 use std::env;
-use std::io::{self, Write};
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -19,55 +18,63 @@ fn main() {
 }
 
 fn display_help() {
-    println!("🏪 متجر باكير الذكي | Bakir Store");
-    println!("----------------------------------");
+    println!("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+    println!("   🏪 متجر باكير الذكي | Bakir Store v3.0   ");
+    println!("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
     println!("الاستخدام: bakir-store -i [اسم_البرنامج]");
-    println!("\n📦 البرامج المتوفرة:");
-    println!("  [أدوات سيادية]: bakir-shield, bakir-get, bakir-opt");
-    println!("  [أدوات عالمية]: timeshift, vlc, stacer");
+    println!("");
+    println!("🛡️  [الأدوات السيادية - Bakir Core]");
+    println!("   • bakir-shield          : الجدار الناري الذكي");
+    println!("   • bakir-get             : محرك التحميل الشامل");
+    println!("   • bakir-opt             : منظف ومسرع النظام");
+    println!("   • bakir-terminal-theme  : مغير سمات الطرفية");
+    println!("");
+    println!("🌐  [الأدوات العالمية - Global Tools]");
+    println!("   • timeshift             : نظام لقطات الاستعادة");
+    println!("   • vlc                   : مشغل الوسائط الشامل");
+    println!("   • stacer                : مراقب النظام الرسومي");
+    println!("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
 }
 
 fn install_logic(pkg: &str) {
     match pkg {
-        // فئة الأدوات السيادية (تحميل من GitHub)
-        "bakir-shield" | "bakir-get" | "bakir-opt" => {
-            println!("🛡️ جاري جلب الأداة السيادية [{}] من مستودع باكير...", pkg);
+        "bakir-shield" | "bakir-get" | "bakir-opt" | "bakir-terminal-theme" => {
+            println!("🚀 جاري جلب الأداة السيادية [{}] من المستودع...", pkg);
             install_sovereign(pkg);
         },
-        // فئة الأدوات العالمية (جلب من مستودعات Debian)
         "timeshift" | "vlc" | "stacer" => {
             println!("🌐 جاري جلب [{}] من مستودعات Debian الرسمية...", pkg);
             install_global(pkg);
         },
-        _ => println!("❌ البرنامج [{}] غير مدرج في قائمة المتجر حالياً.", pkg),
+        _ => println!("❌ الخطأ: البرنامج [{}] غير مدرج في سجلاتنا.", pkg),
     }
 }
 
 fn install_sovereign(name: &str) {
+    // تصحيح الرابط: السكربتات والبرامج موجودة في remote-repo داخل المستودع
     let url = format!("https://raw.githubusercontent.com/abuhussen/Bakir-Core/main/remote-repo/{}", name);
     let dest = format!("/usr/bin/{}", name);
 
     let status = Command::new("sudo")
         .args(&["wget", "-q", "--show-progress", &url, "-O", &dest])
         .status()
-        .expect("فشل في تحميل الأداة");
+        .expect("فشل في الاتصال بالمستودع");
 
     if status.success() {
-        Command::new("sudo").args(&["chmod", "+x", &dest]).status().unwrap();
-        println!("✅ تم تنصيب الأداة السيادية [{}] بنجاح في /usr/bin", name);
+        let _ = Command::new("sudo").args(&["chmod", "+x", &dest]).status();
+        println!("✅ تم التثبيت بنجاح! يمكنك الآن كتابة [{}] في الطرفية.", name);
+    } else {
+        println!("❌ فشل التحميل. تأكد من وجود الملف في المستودع بهذا الاسم: {}", name);
     }
 }
 
 fn install_global(name: &str) {
-    // تحديث المستودعات قبل الجلب لضمان أحدث نسخة
-    let _ = Command::new("sudo").args(&["apt", "update", "-y"]).status();
-    
     let status = Command::new("sudo")
         .args(&["apt", "install", "-y", name])
         .status()
-        .expect("فشل في الاتصال بمستودعات Debian");
+        .expect("فشل في تنفيذ الأمر");
 
     if status.success() {
-        println!("✅ تم تنصيب البرنامج العالمي [{}] بنجاح عبر نظام الحزم.", name);
+        println!("✅ تم تثبيت البرنامج العالمي [{}] بنجاح.", name);
     }
 }
