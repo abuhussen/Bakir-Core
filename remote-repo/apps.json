@@ -1,0 +1,8 @@
+{
+  "sovereign": [
+    {"name": "bakir-store", "desc": "مدير الحزم السيادي"},
+    {"name": "bakir-vpn", "desc": "أداة الاتصال الآمن"},
+    {"name": "bakir-shield", "desc": "درع الحماية"},
+    {"name": "bakir-get", "desc": "مساعد التحميل"}
+  ]
+}
