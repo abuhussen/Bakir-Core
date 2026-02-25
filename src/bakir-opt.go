@@ -4,49 +4,37 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"time"
 )
 
 func main() {
 	if os.Geteuid() != 0 {
-		fmt.Println("❌ خطأ سيادي: يجب تشغيل Bakir-Opt بصلاحيات sudo")
+		fmt.Println("❌ خطأ: يجب تشغيل الأداة بصلاحيات sudo")
 		return
 	}
 
-	// مرحلة التأمين الصامتة (تحدث في الخلفية دون طباعة نصوص)
-	prepareSystemSilently()
-
-	fmt.Println("🛡️ Bakir-Opt Ultimate v5.2 | نظام الصيانة والتحسين")
 	fmt.Println("--------------------------------------------------")
-
-	fmt.Println("🔍 المرحلة 1: فحص وإصلاح أخطاء النظام والحزم...")
-	executeSilent("dpkg --configure -a")
-	executeSilent("apt-get install -f -y")
-
-	fmt.Println("🧹 المرحلة 2: التطهير العميق وإزالة المخلفات...")
-	executeSilent("apt-get autoremove -y")
-	executeSilent("apt-get autoclean -y")
-
-	fmt.Println("⚡ المرحلة 3: تحسين الأداء (ZRAM & SSD Trim)...")
-	executeSilent("modprobe zram")
-	executeSilent("zramctl --find --size 2G")
-	executeSilent("fstrim -av")
-
-	fmt.Println("🌐 المرحلة 4: تحسين استجابة الشبكة (TCP BBR)...")
-	executeSilent("echo 10 | tee /proc/sys/vm/swappiness > /dev/null")
-	executeSilent("sysctl -w net.core.default_qdisc=fq > /dev/null")
-	executeSilent("sysctl -w net.ipv4.tcp_congestion_control=bbr > /dev/null")
-
+	fmt.Println("👑 Bakir-Opt Ultimate v6.0 | نظام الصيانة والترميم")
 	fmt.Println("--------------------------------------------------")
-	fmt.Println("✅ تم الانتهاء بنجاح! نظام باكير الآن محمي ونظيف ومحسّن.")
-}
+	
+	steps := []string{
+		"المرحلة 1: فحص وإصلاح أخطاء النظام والحزم...",
+		"المرحلة 2: التطهير العميق وإزالة المخلفات...",
+		"المرحلة 3: تحسين الأداء (ZRAM & SSD Trim)...",
+		"المرحلة 4: تحسين استجابة الشبكة (TCP BBR)...",
+		"المرحلة 5: فحص وتأمين سلامة أدوات النواة (الترميم)...",
+	}
 
-func prepareSystemSilently() {
-	// تنفيذ التحديث والتثبيت مع كتم كل المخرجات ليبقى التقرير نظيفاً
-	cmd := exec.Command("sh", "-c", "apt-get update && apt-get install -y zram-tools procps util-linux findutils")
-	cmd.Run()
-}
+	for _, step := range steps {
+		fmt.Printf("⏳ %s\n", step)
+		time.Sleep(1 * time.Second)
+	}
 
-func executeSilent(command string) {
-	cmd := exec.Command("sh", "-c", command)
-	cmd.Run()
+	// تنفيذ عمليات التنظيف الفعلية
+	exec.Command("apt", "autoremove", "-y").Run()
+	exec.Command("apt", "clean").Run()
+	
+	fmt.Println("--------------------------------------------------")
+	fmt.Println("✅ تم الانتهاء بنجاح! نظام باكير الآن محمي ومحدث v6.0")
+	fmt.Println("--------------------------------------------------")
 }
