@@ -18,7 +18,6 @@ func main() {
 	fmt.Println("🔥 Bakir-Opt v7.0 | النسخة الوحشية (الترميم الجراحي)")
 	fmt.Println("--------------------------------------------------")
 
-	// مصفوفة لتخزين سجل الإصلاحات
 	var logDetails []string
 	
 	steps := []struct {
@@ -43,15 +42,22 @@ func main() {
 		time.Sleep(1 * time.Second)
 	}
 
-	// إرسال إشعار لسطح المكتب (Desktop Notification)
-	summary := strings.Join(logDetails, "\n")
-	exec.Command("notify-send", "-i", "utilities-terminal", "✅ اكتمل الترميم السيادي", "تم فحص وصيانة النظام بنجاح v7.0").Run()
+	// ملخص العملية
+	summaryText := strings.Join(logDetails, "\n")
+	
+	// إرسال الإشعار لسطح المكتب حتى مع استخدام sudo
+	currentUser := os.Getenv("SUDO_USER")
+	if currentUser == "" {
+		currentUser = os.Getenv("USER")
+	}
+	
+	// أمر الإشعار المتقدم
+	notificationCmd := fmt.Sprintf("sudo -u %s DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u %s)/bus notify-send -i utilities-terminal '✅ اكتمل الترميم السيادي' 'تم صيانة نظام باكير بنجاح'", currentUser, currentUser)
+	exec.Command("sh", "-c", notificationCmd).Run()
 
 	fmt.Println("--------------------------------------------------")
 	fmt.Println("📋 ملخص العملية الجراحية:")
-	for _, l := range logDetails {
-		fmt.Println(l)
-	}
+	fmt.Println(summaryText)
 	fmt.Println("--------------------------------------------------")
 	fmt.Printf("🚀 الوحش v7.0: النظام الآن في قمة عطائه يا سيادة المستشار.\n")
 }
