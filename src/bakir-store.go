@@ -12,11 +12,13 @@ type App struct {
 }
 
 type Repo struct {
-	BakirCore []App `json:"bakir_core"`
+	BakirCore     []App `json:"bakir_core"`
+	GlobalTools   []App `json:"global_tools"`
+	ThemesProject []App `json:"themes_project"`
 }
 
 func main() {
-	fmt.Println("🛒 Bakir Store | متجر باكير السيادي v3.0")
+	fmt.Println("🛒 Bakir Store | متجر باكير السيادي v3.1")
 	fmt.Println("--------------------------------------------------")
 
 	content, err := ioutil.ReadFile("/home/bakir/Bakir-Project/remote-repo/apps.json")
@@ -28,9 +30,21 @@ func main() {
 	var repo Repo
 	json.Unmarshal(content, &repo)
 
-	fmt.Println("📦 [Bakir Core Tools - الأدوات السيادية]")
+	fmt.Println("📦 [القسم الأول - Bakir Core Tools]")
 	for i, app := range repo.BakirCore {
 		fmt.Printf("%d. %-20s | %s\n", i+1, app.Name, app.Desc)
 	}
-	fmt.Println("\n✅ المتجر عاد للعمل بنجاح يا سيادة المستشار.")
+
+	fmt.Println("\n🌍 [القسم الثاني - Global Tools]")
+	for i, app := range repo.GlobalTools {
+		fmt.Printf("%d. %-20s | %s\n", i+1, app.Name, app.Desc)
+	}
+
+	fmt.Println("\n🎨 [القسم الثالث - Bakir Themes & Icons]")
+	for _, app := range repo.ThemesProject {
+		fmt.Printf("* %-21s | %s\n", app.Name, app.Desc)
+	}
+	
+	fmt.Println("--------------------------------------------------")
+	fmt.Println("✅ المتجر عاد بكامل قواه يا سيادة المستشار!")
 }

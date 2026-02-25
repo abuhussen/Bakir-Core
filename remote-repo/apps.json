@@ -6,5 +6,16 @@
     {"name": "bakir-terminal-theme", "desc": "تخصيص هوية التيرمنال"},
     {"name": "bakir-snap", "desc": "نظام النسخ الاحتياطي الذكي (محلي)"},
     {"name": "bakir-store", "desc": "المتجر المركزي v3.0"}
+  ],
+  "global_tools": [
+    {"name": "firefox-esr", "desc": "متصفح الإنترنت الرسمي والآمن"},
+    {"name": "timeshift", "desc": "آلة الزمن لاستعادة النظام عند الانهيار"},
+    {"name": "vlc", "desc": "مشغل الوسائط المتعددة الشامل"},
+    {"name": "gparted", "desc": "أداة إدارة وتقسيم الأقراص"},
+    {"name": "libnotify-bin", "desc": "نظام تنبيهات النظام"},
+    {"name": "htop", "desc": "مراقب موارد النظام المتقدم"}
+  ],
+  "themes_project": [
+    {"name": "Bakir Themes & Icons", "desc": "مشروع الهوية البصرية (قيد التطوير)"}
   ]
 }
