@@ -1,8 +1,10 @@
 {
-  "sovereign": [
-    {"name": "bakir-store", "desc": "مدير الحزم السيادي"},
-    {"name": "bakir-vpn", "desc": "أداة الاتصال الآمن"},
-    {"name": "bakir-shield", "desc": "درع الحماية"},
-    {"name": "bakir-get", "desc": "مساعد التحميل"}
+  "bakir_core": [
+    {"name": "bakir-get", "desc": "مدير الحزم الصاروخي - يشمل yt-dlp و aria2"},
+    {"name": "bakir-shield", "desc": "نظام الحماية والجدار الناري"},
+    {"name": "bakir-opt", "desc": "أداة تحسين وتسريع النظام"},
+    {"name": "bakir-terminal-theme", "desc": "تخصيص مظهر التيرمنال"},
+    {"name": "bakir-snap", "desc": "نظام النسخ الاحتياطي الذكي (محلي)"},
+    {"name": "bakir-store", "desc": "المتجر المركزي"}
   ]
 }
