@@ -2,7 +2,7 @@ use std::process::{Command, Stdio};
 use std::env;
 
 fn send_bakir_notification(title: &str, message: &str) {
-    // محاولة إرسال الإشعار للمستخدم الحالي حتى لو كان التشغيل بـ sudo
+    // ميزتك الاحترافية لإرسال الإشعارات من خلف sudo
     let _ = Command::new("sudo")
         .args(&["-u", "bakir", "DISPLAY=:0", "DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus", 
                 "notify-send", title, message, "-i", "security-high"])
@@ -11,7 +11,7 @@ fn send_bakir_notification(title: &str, message: &str) {
 
 fn main() {
     let args: Vec<String> = env::args().collect();
-    if args.len() < 2 || args.contains(&"-h".to_string()) {
+    if args.len() < 2 || args.contains(&"-h".to_string()) || args.contains(&"--help".to_string()) {
         display_help();
         return;
     }
@@ -36,23 +36,26 @@ fn main() {
             send_bakir_notification("👻 وضع الشبح", if val == "1" { "النظام الآن متخفٍ." } else { "النظام الآن مرئي." });
         },
         "-scan" => {
-             println!("📊 جاري فحص المنافذ...");
+             println!("📊 جاري فحص المنافذ والمستويات...");
              let _ = Command::new("sudo").args(&["ufw", "status", "numbered"]).stdout(Stdio::inherit()).status();
         },
         "-guard" => {
-            println!("📡 تشغيل الحارس...");
-            send_bakir_notification("📡 حارس باكير", "بدأ الحارس مراقبة النظام.");
+            println!("📡 تشغيل الحارس السيادي...");
+            send_bakir_notification("📡 حارس باكير", "بدأ الحارس مراقبة النظام نشطاً.");
         },
-        _ => println!("❌ أمر غير معروف."),
+        _ => println!("❌ أمر غير معروف. استخدم bakir-shield -h للمساعدة."),
     }
 }
 
 fn display_help() {
-    println!("🛡️ حصن باكير السيادي | Bakir-Shield");
-    println!("------------------------------------------");
-    println!("bakir -all on/off          : فتح/إغلاق شامل");
-    println!("bakir -port [الرقم] on/of    : التحكم بمنفذ محدد");
-    println!("bakir -scan                : عرض الجدول");
-    println!("bakir -ghost on/off        : وضع الشبح");
-    println!("bakir -guard               : تفعيل الحارس");
+    println!("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+    println!("   🛡️ حصن باكير السيادي | Bakir-Shield v2.0   ");
+    println!("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+    println!(" [ التعليمات الرسمية والموحدة ]:");
+    println!("  • bakir-shield -all on/off      : فتح/إغلاق شامل");
+    println!("  • bakir-shield -port [رقم] on/off : التحكم بمنفذ محدد");
+    println!("  • bakir-shield -scan            : عرض جدول الحماية");
+    println!("  • bakir-shield -ghost on/off    : وضع الشبح (إخفاء الـ Ping)");
+    println!("  • bakir-shield -guard           : تفعيل الحارس النشط");
+    println!("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
 }
