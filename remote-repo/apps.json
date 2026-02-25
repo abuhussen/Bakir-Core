@@ -1,68 +1,35 @@
 {
   "bakir_core": [
-    {
-      "name": "bakir-get",
-      "desc": "مدير الحزم الصاروخي (yt-dlp, aria2)"
-    },
-    {
-      "name": "bakir-shield",
-      "desc": "نظام الحماية والجدار الناري"
-    },
-    {
-      "name": "bakir-opt",
-      "desc": "أداة الصيانة وتحسين الأداء"
-    },
-    {
-      "name": "bakir-terminal-theme",
-      "desc": "تخصيص هوية التيرمنال"
-    },
-    {
-      "name": "bakir-snap",
-      "desc": "نظام النسخ الاحتياطي الذكي (محلي)"
-    },
-    {
-      "name": "bakir-store",
-      "desc": "المتجر المركزي v3.0"
-    },
-    {
-      "name": "bakir-sys",
-      "desc": "مراقب موارد النظام والمعالج"
-    },
-    {
-      "name": "bakir-app-manager",
-      "desc": "مثبت التطبيقات الخارجية (Chrome, VS Code)"
-    }
+    {"name": "bakir-get", "desc": "مدير الحزم الصاروخي (yt-dlp, aria2)"},
+    {"name": "bakir-shield", "desc": "نظام الحماية والجدار الناري"},
+    {"name": "bakir-opt", "desc": "أداة الصيانة وتحسين الأداء v5.2"},
+    {"name": "bakir-terminal-theme", "desc": "تخصيص هوية التيرمنال"},
+    {"name": "bakir-snap", "desc": "نظام النسخ الاحتياطي الذكي (محلي)"},
+    {"name": "bakir-store", "desc": "المتجر المركزي v3.1"},
+    {"name": "bakir-sys", "desc": "مراقب موارد النظام والمعالج"},
+    {"name": "bakir-app-manager", "desc": "مثبت التطبيقات الخارجية الشامل"}
+  ],
+  "external_apps_list": [
+    {"name": "Google Chrome", "desc": "متصفح الويب الأكثر شيوعاً"},
+    {"name": "VS Code", "desc": "أفضل بيئة برمجية للمطورين"},
+    {"name": "Zoom", "desc": "منصة الاجتماعات المرئية"},
+    {"name": "Telegram", "desc": "تطبيق التواصل الآمن (نسخة سطح المكتب)"},
+    {"name": "Discord", "desc": "منصة التواصل للاعبين والمطورين"},
+    {"name": "Spotify", "desc": "مشغل الموسيقى العالمي"},
+    {"name": "GIMP", "desc": "بديل فوتوشوب لتحرير الصور"},
+    {"name": "Inkscape", "desc": "تصميم الرسوميات المتجهة (Vector)"},
+    {"name": "Audacity", "desc": "محرر الصوتيات الاحترافي"},
+    {"name": "AnyDesk", "desc": "التحكم عن بعد في الأجهزة"},
+    {"name": "Docker", "desc": "بيئة الحاويات للمطورين والمختبرين"}
   ],
   "global_tools": [
-    {
-      "name": "firefox-esr",
-      "desc": "متصفح الإنترنت الرسمي والآمن"
-    },
-    {
-      "name": "timeshift",
-      "desc": "آلة الزمن لاستعادة النظام عند الانهيار"
-    },
-    {
-      "name": "vlc",
-      "desc": "مشغل الوسائط المتعددة الشامل"
-    },
-    {
-      "name": "gparted",
-      "desc": "أداة إدارة وتقسيم الأقراص"
-    },
-    {
-      "name": "libnotify-bin",
-      "desc": "نظام تنبيهات النظام"
-    },
-    {
-      "name": "htop",
-      "desc": "مراقب موارد النظام المتقدم"
-    }
+    {"name": "firefox-esr", "desc": "متصفح الإنترنت الرسمي والآمن"},
+    {"name": "timeshift", "desc": "آلة الزمن لاستعادة النظام"},
+    {"name": "vlc", "desc": "مشغل الوسائط الشامل"},
+    {"name": "gparted", "desc": "أداة إدارة الأقراص"},
+    {"name": "htop", "desc": "مراقب الموارد المتقدم"}
   ],
   "themes_project": [
-    {
-      "name": "Bakir Themes & Icons",
-      "desc": "مشروع الهوية البصرية (قيد التطوير)"
-    }
+    {"name": "Bakir Themes & Icons", "desc": "مشروع الهوية البصرية (قيد التطوير)"}
   ]
 }
