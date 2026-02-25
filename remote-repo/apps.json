@@ -100,11 +100,5 @@
       "name": "htop",
       "desc": "مراقب الموارد المتقدم"
     }
-  ],
-  "themes_project": [
-    {
-      "name": "Bakir Themes & Icons",
-      "desc": "مشروع الهوية البصرية (قيد التطوير)"
-    }
   ]
 }

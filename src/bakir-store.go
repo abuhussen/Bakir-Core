@@ -40,7 +40,6 @@ func main() {
 		fmt.Printf("%d. %-20s | %s\n", i+1, app.Name, app.Desc)
 	}
 
-	fmt.Println("\n🎨 [القسم الثالث - Bakir Themes & Icons]")
 	for _, app := range repo.ThemesProject {
 		fmt.Printf("* %-21s | %s\n", app.Name, app.Desc)
 	}
