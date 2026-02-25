@@ -31,10 +31,6 @@
     {
       "name": "bakir-app-manager",
       "desc": "مثبت التطبيقات الخارجية الشامل"
-    },
-    {
-      "name": "bakir-task-killer",
-      "desc": "نظام إنهاء العمليات المعلقة والمستهلكة للموارد"
     }
   ],
   "external_apps_list": [
