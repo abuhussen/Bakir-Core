@@ -15,11 +15,11 @@ func main() {
 	fmt.Println("🛡️ Bakir-Opt Ultimate v5.0 | نظام الصيانة والفرض السيادي")
 	fmt.Println("--------------------------------------------------")
 
-	// المرحلة 0: تأمين الأدوات (لضمان عمل zramctl و sysctl)
+	// المرحلة 0: فرض وجود الأدوات (علاج مشكلة command not found)
 	fmt.Println("📦 المرحلة 0: تأمين أدوات الفحص والنظام...")
 	executeReal("apt-get update && apt-get install -y zram-tools procps util-linux findutils")
 
-	// المرحلة 1: الصيانة العلاجية الحقيقية (إصلاح الحزم المعطوبة)
+	// المرحلة 1: الصيانة العلاجية الحقيقية (إصلاح الحزم)
 	fmt.Println("🔍 المرحلة 1: فحص وإصلاح أخطاء النظام والحزم...")
 	executeReal("dpkg --configure -a")           
 	executeReal("apt-get install -f -y")        
@@ -29,13 +29,13 @@ func main() {
 	executeReal("apt-get autoremove -y")
 	executeReal("apt-get autoclean -y")
 
-	// المرحلة 3: تفعيل ZRAM وتحسين القرص (فعل حقيقي سترى نتائجه)
+	// المرحلة 3: تفعيل ZRAM وتحسين الأداء (فعل حقيقي)
 	fmt.Println("⚡ المرحلة 3: تحسين الأداء (ZRAM & SSD Trim)...")
 	executeReal("modprobe zram || true")
 	executeReal("zramctl --find --size 2G || true")
 	executeReal("fstrim -av")
 
-	// المرحلة 4: فرض إعدادات الشبكة والنواة (TCP BBR)
+	// المرحلة 4: فرض إعدادات الشبكة (TCP BBR)
 	fmt.Println("🌐 المرحلة 4: تحسين استجابة الشبكة (TCP BBR)...")
 	executeReal("echo 10 | tee /proc/sys/vm/swappiness")
 	executeReal("echo 'net.core.default_qdisc=fq' | tee -a /etc/sysctl.conf")
@@ -48,7 +48,7 @@ func main() {
 
 func executeReal(command string) {
 	cmd := exec.Command("sh", "-c", command)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
+	cmd.Stdout = os.Stdout // ربط المخرج لترا الحقيقة بعينك
+	cmd.Stderr = os.Stderr 
 	cmd.Run()
 }
