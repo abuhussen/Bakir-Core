@@ -1,10 +1,10 @@
 {
   "bakir_core": [
-    {"name": "bakir-get", "desc": "مدير الحزم الصاروخي - يشمل yt-dlp و aria2"},
-    {"name": "bakir-shield", "desc": "نظام الحماية والجدار الناري"},
-    {"name": "bakir-opt", "desc": "أداة تحسين وتسريع النظام"},
-    {"name": "bakir-terminal-theme", "desc": "تخصيص مظهر التيرمنال"},
+    {"name": "bakir-get", "desc": "مدير الحزم الصاروخي (yt-dlp, aria2)"},
+    {"name": "bakir-shield", "desc": "نظام الحماية والجدار الناري السيادي"},
+    {"name": "bakir-opt", "desc": "أداة الصيانة وتحسين الأداء v5.2"},
+    {"name": "bakir-terminal-theme", "desc": "تخصيص هوية التيرمنال البصرية"},
     {"name": "bakir-snap", "desc": "نظام النسخ الاحتياطي الذكي (محلي)"},
-    {"name": "bakir-store", "desc": "المتجر المركزي"}
+    {"name": "bakir-store", "desc": "المتجر المركزي v3.0"}
   ]
 }
