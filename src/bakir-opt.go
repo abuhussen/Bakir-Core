@@ -12,36 +12,36 @@ func main() {
 		return
 	}
 
-	fmt.Println("⚡ Bakir-Opt v3.1 | المحرك القتالي لنظام باكير")
+	fmt.Println("🛡️ Bakir-Opt Ultimate v4.0 | نظام الصيانة والتحسين الشامل")
 	fmt.Println("--------------------------------------------------")
 
-	// 1. ZRAM
-	fmt.Println("🚀 تفعيل تقنية ZRAM (مضاعفة كفاءة الرام)...")
+	// 1. فحص وإصلاح الحزم (الجانب العلاجي)
+	fmt.Println("🔍 المرحلة 1: فحص وإصلاح أخطاء النظام والحزم...")
+	execute("dpkg --configure -a")           
+	execute("apt-get install -f -y")        
+	execute("apt-get update --fix-missing") 
+
+	// 2. تنظيف الأخطاء والمخلفات العميق
+	fmt.Println("🧹 المرحلة 2: التطهير العميق وإزالة الحزم اليتيمة...")
+	execute("apt-get autoremove -y")
+	execute("apt-get autoclean -y")
+	execute("apt-get clean")
+
+	// 3. تحسين أداء القرص والنواة
+	fmt.Println("⚡ المرحلة 3: تحسين الأداء (ZRAM & SSD Trim)...")
 	run("modprobe", "zram")
 	run("zramctl", "--find", "--size", "2G")
-
-	// 2. SSD Trim
-	fmt.Println("💾 تحسين أداء القرص الصلب (SSD Optimization)...")
 	run("fstrim", "-av")
 
-	// 3. Kernel Swappiness (استخدام bash -c مع sudo tee لتجنب خطأ الصلاحيات)
-	fmt.Println("🧠 ضبط ذكاء النواة (Swappiness Tuning)...")
+	// 4. ضبط ذكاء الشبكة والنواة
+	fmt.Println("🌐 المرحلة 4: تحسين استجابة الشبكة (TCP BBR)...")
 	execute("echo 10 | tee /proc/sys/vm/swappiness")
-
-	// 4. TCP BBR & Network Optimization
-	fmt.Println("🌐 تسريع استجابة الشبكة (TCP BBR)...")
 	execute("echo 'net.core.default_qdisc=fq' | tee -a /etc/sysctl.conf")
 	execute("echo 'net.ipv4.tcp_congestion_control=bbr' | tee -a /etc/sysctl.conf")
 	run("sysctl", "-p")
 
-	// 5. التنظيف العميق
-	fmt.Println("🧹 جاري كنس مخلفات النظام...")
-	run("apt-get", "autoremove", "-y")
-	run("apt-get", "autoclean", "-y")
-	run("find", "/tmp", "-type", "f", "-atime", "+1", "-delete")
-
 	fmt.Println("--------------------------------------------------")
-	fmt.Println("✅ اكتملت العملية! نظام Bakir Linux الآن في قمة نشاطه.")
+	fmt.Println("✅ تم الانتهاء! نظام باكير الآن محمي، نظيف، ومحسّن بالكامل.")
 }
 
 func run(name string, args ...string) {
@@ -49,7 +49,6 @@ func run(name string, args ...string) {
 	cmd.Run()
 }
 
-// دالة تنفيذ الأوامر المعقدة التي تحتاج لـ Pipe (|) و Tee
 func execute(command string) {
 	cmd := exec.Command("sh", "-c", command)
 	cmd.Run()
