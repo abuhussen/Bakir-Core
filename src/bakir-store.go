@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"os"
 )
 
 type App struct {
@@ -12,38 +13,36 @@ type App struct {
 }
 
 type Repo struct {
-	BakirCore     []App `json:"bakir_core"`
-	GlobalTools   []App `json:"global_tools"`
-	ThemesProject []App `json:"themes_project"`
+	BakirCore   []App `json:"bakir_core"`
+	GlobalTools []App `json:"global_tools"`
 }
 
 func main() {
-	fmt.Println("🛒 Bakir Store | متجر باكير السيادي v3.1")
+	fmt.Println("--------------------------------------------------")
+	fmt.Println("📦 Bakir Store | متجر باكير السيادي v3.1")
 	fmt.Println("--------------------------------------------------")
 
-	content, err := ioutil.ReadFile("/home/bakir/Bakir-Project/remote-repo/apps.json")
+	// قراءة قاعدة البيانات
+	data, err := ioutil.ReadFile("/home/bakir/Bakir-Project/remote-repo/apps.json")
 	if err != nil {
-		fmt.Println("❌ خطأ: لم يتم العثور على قاعدة بيانات المتجر.")
+		fmt.Println("❌ خطأ: تعذر الوصول لقاعدة بيانات المتجر.")
 		return
 	}
 
 	var repo Repo
-	json.Unmarshal(content, &repo)
+	json.Unmarshal(data, &repo)
 
-	fmt.Println("📦 [القسم الأول - Bakir Core Tools]")
+	// القسم الأول: الأدوات الأساسية
+	fmt.Println("\n📂 [القسم الأول - Bakir Core Tools]")
 	for i, app := range repo.BakirCore {
 		fmt.Printf("%d. %-20s | %s\n", i+1, app.Name, app.Desc)
 	}
 
+	// القسم الثاني: الأدوات العالمية
 	fmt.Println("\n🌍 [القسم الثاني - Global Tools]")
 	for i, app := range repo.GlobalTools {
 		fmt.Printf("%d. %-20s | %s\n", i+1, app.Name, app.Desc)
 	}
 
-	for _, app := range repo.ThemesProject {
-		fmt.Printf("* %-21s | %s\n", app.Name, app.Desc)
-	}
-	
 	fmt.Println("--------------------------------------------------")
-	fmt.Println("✅ المتجر عاد بكامل قواه يا سيادة المستشار!")
 }
