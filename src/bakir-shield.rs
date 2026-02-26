@@ -2,85 +2,81 @@ use std::process::{Command, Stdio};
 use std::env;
 use std::thread;
 use std::time::Duration;
+use std::fs::File;
+use std::io::{BufRead, BufReader, Seek, SeekFrom};
 
 fn send_bakir_notification(title: &str, message: &str, urgency: &str) {
-    // إرسال إشعار احترافي (عادي أو حرج)
     let _ = Command::new("sudo")
         .args(&["-u", "bakir", "DISPLAY=:0", "DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus", 
                 "notify-send", title, message, "-i", "security-high", "-u", urgency])
         .status();
 }
 
-// وظيفة الإبادة (Counter-Attack) - للهجوم المضاد
+// وظيفة "الإبادة والتلغيم الحراري"
 fn exterminate(target_ip: &str) {
-    send_bakir_notification("💀 ردع سيادي", &format!("تم رصد متسلل: {}. جاري تدمير الجلسة...", target_ip), "critical");
+    println!("🚨 [إنذار قتالي] رصد متسلل: {}. جاري سحق الهدف...", target_ip);
+    send_bakir_notification("💀 إبادة سيادية", &format!("رصد هجوم من {}. جاري تدمير جهاز المعتدي!", target_ip), "critical");
     
-    // 1. الحظر الجراحي (IP Blackhole)
+    // 1. الحظر الفوري في الجدار
     let _ = Command::new("sudo").args(&["iptables", "-I", "INPUT", "-s", target_ip, "-j", "DROP"]).status();
     
-    // 2. القنبلة الحرارية (إرسال حزم تعطل معالج المهاجم إذا استقبلها)
-    // نستخدم hping3 لإغراق المهاجم بحزم تجمد جهازه
-    let _ = Command::new("sudo").args(&["hping3", "--flood", "--rand-source", "-S", "-p", "80", target_ip]).spawn();
+    // 2. الهجوم المضاد (قنبلة الحزم - Flooding) لإجهاد معالج المهاجم
+    let _ = Command::new("sudo").args(&["hping3", "--flood", "-S", "-p", "80", target_ip]).spawn();
+}
+
+fn monitor_logs() {
+    println!("📡 القناص الآلي نشط... يراقب محاولات الاختراق في صمت.");
+    let file = File::open("/var/log/auth.log").expect("❌ لا يمكن الوصول للسجلات - تأكد من صلاحيات sudo");
+    let mut reader = BufReader::new(file);
     
-    println!("🔥 تم شن الهجوم المضاد على الـ IP: {}", target_ip);
+    // الانتقال لآخر الملف لتجنب معالجة الهجمات القديمة
+    let _ = reader.seek(SeekFrom::End(0));
+
+    loop {
+        let mut line = String::new();
+        let resp = reader.read_line(&mut line).unwrap();
+        if resp > 0 {
+            // رصد محاولات دخول فاشلة (SSH أو Sudo)
+            if line.contains("Failed password") || line.contains("authentication failure") {
+                // استخراج الـ IP (تبسيطاً سنقوم بالبحث عن الأنماط الشائعة)
+                let parts: Vec<&str> = line.split_whitespace().collect();
+                for (i, part) in parts.iter().enumerate() {
+                    if *part == "from" && i + 1 < parts.len() {
+                        let ip = parts[i+1];
+                        exterminate(ip);
+                    }
+                }
+            }
+        }
+        thread::sleep(Duration::from_millis(500));
+    }
 }
 
 fn main() {
     let args: Vec<String> = env::args().collect();
-    if args.len() < 2 || args.contains(&"-h".to_string()) || args.contains(&"--help".to_string()) {
-        display_help();
-        return;
-    }
+    if args.len() < 2 { display_help(); return; }
 
     match args[1].as_str() {
-        "-all" => {
-            let action = if args.contains(&"off".to_string()) { "deny" } else { "allow" };
-            let _ = Command::new("sudo").args(&["ufw", "default", action, "incoming"]).status();
-            let _ = Command::new("sudo").args(&["ufw", "--force", "enable"]).status();
-            send_bakir_notification("🛡️ حصن باكير", "تم تحديث السياسة الشاملة للمنافذ.", "normal");
-        },
-        "-port" => {
-            if args.len() >= 4 {
-                let action = if args[3] == "on" { "allow" } else { "deny" };
-                let _ = Command::new("sudo").args(&["ufw", action, &args[2]]).status();
-                send_bakir_notification("🛡️ حصن باكير", &format!("تحديث المنفذ {}: {}", args[2], args[3]), "normal");
-            }
-        },
-        "-ghost" => {
-            let val = if args.contains(&"on".to_string()) { "1" } else { "0" };
-            let _ = Command::new("sudo").args(&["sysctl", "-w", &format!("net.ipv4.icmp_echo_ignore_all={}", val)]).status();
-            send_bakir_notification("👻 وضع الشبح", if val == "1" { "النظام الآن متخفٍ." } else { "النظام الآن مرئي." }, "normal");
-        },
         "-guard" => {
-            println!("📡 تفعيل 'الحارس الانتحاري'... بانتظار أي حماقة من هكر.");
-            send_bakir_notification("📡 حارس باكير", "وضع الردع التلقائي نشط الآن.", "normal");
-            
-            // محاكاة مراقبة السجلات (هنا يكمن الذكاء)
-            // في النسخة النهائية سنقوم بعمل Parse لملف /var/log/auth.log
-            println!("🛡️ مراقبة محاولات الاختراق الجارية...");
-            // مثال لمحاكاة رصد IP مهاجم (للتوضيح فقط)
-            // exterminate("192.168.1.50"); 
+            monitor_logs();
         },
         "-redbutton" => {
-            println!("🚨 تفعيل زر الطوارئ! قطع جميع الاتصالات...");
+            println!("🚨 تفعيل زر الطوارئ! عزل شامل...");
             let _ = Command::new("sudo").args(&["ufw", "deny", "out", "to", "any"]).status();
             let _ = Command::new("sudo").args(&["ufw", "deny", "in", "from", "any"]).status();
-            send_bakir_notification("🚨 زر الطوارئ", "تم عزل النظام بالكامل عن الشبكة!", "critical");
+            send_bakir_notification("🚨 زر الطوارئ", "النظام في وضع العزل المطلق!", "critical");
         },
-        _ => println!("❌ أمر غير معروف. استخدم bakir-shield -h للمساعدة."),
+        "-all" => {
+            let _ = Command::new("sudo").args(&["ufw", "default", "allow", "incoming"]).status();
+            send_bakir_notification("🛡️ حصن باكير", "تم فتح القنوات السيادية.", "normal");
+        },
+        _ => display_help(),
     }
 }
 
 fn display_help() {
-    println!("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-    println!("   ⚔️ درع باكير العسكري | Bakir-Shield v2.5   ");
-    println!("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-    println!(" [ الأوامر القتالية ]:");
-    println!("  • bakir-shield -all on/off      : التحكم الشامل");
-    println!("  • bakir-shield -port [رقم] on/off : التحكم بمنفذ");
-    println!("  • bakir-shield -ghost on/off    : وضع التخفي");
-    println!("  • bakir-shield -guard           : الحارس الردعي (تلقائي)");
-    println!("  • bakir-shield -redbutton       : إبادة الاتصالات (عزل)");
-    println!("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-    println!("⚠️ تحذير: أي محاولة اختراق ستواجه برد فعل مدمر.");
+    println!("⚔️ درع باكير العسكري v2.7 | القناص الآلي");
+    println!(" • bakir-shield -guard      : تفعيل القناص والردع التلقائي");
+    println!(" • bakir-shield -redbutton  : زر الإبادة (عزل النظام)");
+    println!(" • bakir-shield -all on     : إعادة التشغيل الطبيعي");
 }
