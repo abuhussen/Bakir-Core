@@ -2,21 +2,28 @@ use std::process::{Command};
 use std::env;
 use std::thread;
 use std::time::Duration;
-use std::fs::File;
-use std::io::{BufRead, BufReader, Seek, SeekFrom};
+use std::fs::{File, OpenOptions};
+use std::io::{BufRead, BufReader, Seek, SeekFrom, Write};
 use std::path::Path;
 
-fn send_bakir_notification(title: &str, message: &str, urgency: &str) {
+// --- القائمة البيضاء (حمايتك من الحظر الذاتي) ---
+const WHITELIST: &[&str] = &["127.0.0.1", "192.168.1", "192.168.0"];
+
+fn send_notification(title: &str, msg: &str, urgency: &str) {
     let _ = Command::new("sudo")
         .args(&["-u", "bakir", "DISPLAY=:0", "DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus", 
-                "notify-send", title, message, "-i", "security-high", "-u", urgency])
+                "notify-send", title, msg, "-i", "security-high", "-u", urgency])
         .status();
 }
 
-fn exterminate(target_ip: &str) {
-    send_bakir_notification("💀 إبادة سيادية", &format!("تم سحق هجوم من {}. جاري تدمير المعتدي!", target_ip), "critical");
-    let _ = Command::new("sudo").args(&["iptables", "-I", "INPUT", "-s", target_ip, "-j", "DROP"]).status();
-    let _ = Command::new("sudo").args(&["hping3", "--flood", "-S", "-p", "80", target_ip]).spawn();
+fn defense_action(target_ip: &str) {
+    // التحقق من القائمة البيضاء قبل أي إجراء
+    for white_ip in WHITELIST {
+        if target_ip.starts_with(white_ip) { return; }
+    }
+
+    send_notification("🛡️ تأمين سيادي", &format!("تم رصد محاولة اختراق من {}. تم الحظر فوراً.", target_ip), "normal");
+    let _ = Command::new("sudo").args(&["iptables", "-A", "INPUT", "-s", target_ip, "-j", "DROP"]).status();
 }
 
 fn monitor_logs() {
@@ -30,8 +37,8 @@ fn monitor_logs() {
     let mut reader = BufReader::new(file);
     let _ = reader.seek(SeekFrom::End(0));
 
-    println!("📡 القناص الآلي نشط الآن... الحدود تحت السيطرة.");
-    send_bakir_notification("📡 حارس باكير", "بدأ القناص الآلي المراقبة.", "normal");
+    println!("📡 الحارس الصامت نشط الآن... الموارد مستقرة.");
+    send_notification("📡 حارس باكير", "بدأ الدرع الدفاعي المراقبة بصمت.", "normal");
 
     loop {
         let mut line = String::new();
@@ -40,12 +47,12 @@ fn monitor_logs() {
                 let parts: Vec<&str> = line.split_whitespace().collect();
                 for (i, part) in parts.iter().enumerate() {
                     if *part == "from" && i + 1 < parts.len() {
-                        exterminate(parts[i+1]);
+                        defense_action(parts[i+1]);
                     }
                 }
             }
         }
-        thread::sleep(Duration::from_millis(500));
+        thread::sleep(Duration::from_millis(800)); // توفير موارد المعالج (ذكاء اصطناعي برمي)
     }
 }
 
@@ -61,35 +68,47 @@ fn main() {
                 let _ = Command::new("sudo").args(&["ufw", "default", "allow", "incoming"]).status();
                 let _ = Command::new("sudo").args(&["ufw", "default", "allow", "outgoing"]).status();
                 let _ = Command::new("sudo").args(&["ufw", "--force", "enable"]).status();
-                send_bakir_notification("🛡️ حصن باكير", "تم فتح جميع القنوات السيادية.", "normal");
-                println!("🚀 تم استعادة الاتصالات بالكامل.");
+                println!("🚀 الاتصالات مفتوحة ومؤمنة بالدرع.");
             } else {
                 let _ = Command::new("sudo").args(&["ufw", "default", "deny", "incoming"]).status();
-                let _ = Command::new("sudo").args(&["ufw", "--force", "enable"]).status();
                 println!("🔒 تم إغلاق المنافذ الواردة.");
             }
         },
-        "-ghost" => {
-            let val = if args.contains(&"on".to_string()) { "1" } else { "0" };
-            let _ = Command::new("sudo").args(&["sysctl", "-w", &format!("net.ipv4.icmp_echo_ignore_all={}", val)]).status();
-            send_bakir_notification("👻 وضع الشبح", if val == "1" { "النظام متخفٍ." } else { "النظام مرئي." }, "normal");
-        },
         "-guard" => monitor_logs(),
+        "-stop" => {
+            let _ = Command::new("sudo").args(&["pkill", "-f", "bakir-shield"]).status();
+            println!("🛑 تم إيقاف الحارس الصامت بنجاح.");
+        },
         "-redbutton" => {
-            let _ = Command::new("sudo").args(&["ufw", "default", "deny", "outgoing"]).status();
-            let _ = Command::new("sudo").args(&["ufw", "default", "deny", "incoming"]).status();
-            let _ = Command::new("sudo").args(&["ufw", "--force", "enable"]).status();
-            send_bakir_notification("🚨 زر الطوارئ", "تم عزل النظام بالكامل!", "critical");
-            println!("🚨 وضع العزل نشط.");
+            // الطوارئ الذكي: حظر المنافذ الحساسة + ترك المتصفح يعمل
+            let ports = ["21", "22", "23", "445"];
+            for port in &ports {
+                let _ = Command::new("sudo").args(&["ufw", "deny", port]).status();
+            }
+            send_notification("🚨 وضع الحصن", "تم إغلاق المنافذ الحساسة (تصفحك لا يزال متاحاً).", "critical");
+            println!("🚨 تم تفعيل الحماية الذكية.");
+        },
+        "-clean" => {
+            let _ = Command::new("sudo").args(&["iptables", "-F"]).status();
+            println!("🧹 تم تصفير قائمة الحظر بنجاح.");
+        },
+        "-status" => {
+            println!("📊 حالة درع باكير:");
+            let _ = Command::new("sudo").args(&["iptables", "-L", "INPUT", "-v", "-n"]).status();
         },
         _ => display_help(),
     }
 }
 
 fn display_help() {
-    println!("⚔️ درع باكير النهائي v3.2 | Bakir-Shield");
-    println!(" • bakir-shield -all on/off      : التحكم الشامل");
-    println!(" • bakir-shield -ghost on/off    : وضع الشبح");
-    println!(" • bakir-shield -guard           : تفعيل القناص");
-    println!(" • bakir-shield -redbutton       : زر الإبادة (العزل)");
+    println!("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+    println!("   ⚔️ درع باكير v4.0 | النسخة الدفاعية السيادية ");
+    println!("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+    println!("  • bakir-shield -all on/off      : التحكم الشامل");
+    println!("  • bakir-shield -guard           : الحارس الصامت");
+    println!("  • bakir-shield -stop            : إيقاف الحارس");
+    println!("  • bakir-shield -redbutton       : الطوارئ الذكي");
+    println!("  • bakir-shield -status          : التقرير الأمني");
+    println!("  • bakir-shield -clean           : تصفير الحظر");
+    println!("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
 }
