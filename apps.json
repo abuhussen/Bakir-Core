@@ -1,6 +1,10 @@
 {
   "bakir_core": [
     {
+      "name": "bakir-shield",
+      "desc": "الدرع الأمني المتطور (Rust Edition)"
+    },
+    {
       "name": "bakir-aliases",
       "desc": "الاختصارات السيادية"
     },
