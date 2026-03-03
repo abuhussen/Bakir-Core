@@ -1,0 +1,1 @@
+echo 'Bakir Theme Installed'

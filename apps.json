@@ -1,0 +1,13 @@
+{
+  "bakir_core": [
+    {
+      "name": "bakir-aliases",
+      "desc": "الاختصارات السيادية"
+    },
+    {
+      "name": "bakir-terminal-theme",
+      "desc": "الثيم الفيروزي المشع"
+    }
+  ],
+  "global_tools": []
+}

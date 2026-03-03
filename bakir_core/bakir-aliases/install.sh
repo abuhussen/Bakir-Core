@@ -1,0 +1,1 @@
+echo 'Bakir Aliases Installed'
