@@ -1,0 +1,14 @@
+[
+    {
+        "name": "bakir-shield",
+        "description": "الدرع الأمني المتطور (Rust Edition)",
+        "version": "7.0.0",
+        "install_cmd": "curl -sL https://raw.githubusercontent.com/abuhussen/Bakir-Core/main/install_shield.sh | bash"
+    },
+    {
+        "name": "bakir-aliases",
+        "description": "الاختصارات السيادية للنظام",
+        "version": "1.0.0",
+        "install_cmd": "echo 'Installing aliases...'"
+    }
+]
