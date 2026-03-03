@@ -1,0 +1,8 @@
+[package]
+name = "bakir-shield"
+version = "7.0.0"
+edition = "2021"
+authors = ["Bakir <abuhussenbakir@gmail.com>"]
+
+[dependencies]
+colored = "2.0"
