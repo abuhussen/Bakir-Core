@@ -3,8 +3,8 @@
     {"name": "bakir-shield", "desc": "الدرع الأمني المتطور (Rust Edition)"},
     {"name": "bakir-opt", "desc": "الوحش: الترميم الجراحي وصيانة النظام"},
     {"name": "bakir-store", "desc": "متجر باكير السيادي لإدارة الأدوات"},
-    {"name": "bakir-aliases", "desc": "الاختصارات السيادية للنظام"},
-    {"name": "bakir-killer", "desc": "قناص العمليات: تطهير الزومبي وحماية الرام"}
+    {"name": "bakir-killer", "desc": "قناص العمليات: تطهير الزومبي وحماية الرام"},
+    {"name": "bakir-sys", "desc": "مراقب النظام: رادار الرام والمعالج والحرارة"}
   ],
   "global_tools": [
     {"name": "google-chrome", "desc": "متصفح جوجل كروم الرسمي"},
