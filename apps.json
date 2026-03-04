@@ -1,26 +1,18 @@
 {
   "bakir_core": [
-    {
-      "name": "bakir-shield",
-      "desc": "الدرع الأمني المتطور (Rust Edition)"
-    },
-    {
-      "name": "bakir-opt",
-      "desc": "الوحش: الترميم الجراحي وصيانة النظام الشاملة"
-    },
-    {
-      "name": "bakir-store",
-      "desc": "متجر باكير السيادي لإدارة الأدوات"
-    },
-    {
-      "name": "bakir-aliases",
-      "desc": "الاختصارات السيادية للنظام"
-    }
+    {"name": "bakir-shield", "desc": "الدرع الأمني المتطور (Rust Edition)"},
+    {"name": "bakir-opt", "desc": "الوحش: الترميم الجراحي وصيانة النظام"},
+    {"name": "bakir-store", "desc": "متجر باكير السيادي لإدارة الأدوات"},
+    {"name": "bakir-aliases", "desc": "الاختصارات السيادية للنظام"}
   ],
   "global_tools": [
-    {
-      "name": "bakir-app-manager",
-      "desc": "مدير التطبيقات العالمي: ترسانة البرمجيات الخارجية"
-    }
+    {"name": "google-chrome", "desc": "تثبيت متصفح جوجل كروم"},
+    {"name": "brave-browser", "desc": "تثبيت متصفح برايف للخصوصية"},
+    {"name": "firefox", "desc": "تثبيت متصفح فيرفكس"},
+    {"name": "vs-code", "desc": "تثبيت محرر الكود VS Code"},
+    {"name": "timeshift", "desc": "تثبيت نظام آلة الزمن (Backups)"},
+    {"name": "gparted", "desc": "تثبيت أداة تقسيم الأقراص"},
+    {"name": "vlc", "desc": "تثبيت مشغل الوسائط VLC"},
+    {"name": "telegram", "desc": "تثبيت منصة تليجرام"}
   ]
 }
