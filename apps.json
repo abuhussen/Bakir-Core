@@ -1,19 +1,68 @@
 {
   "bakir_core": [
-    {"name": "bakir-shield", "desc": "الدرع الأمني المتطور (Rust Edition)"},
-    {"name": "bakir-opt", "desc": "الوحش: الترميم الجراحي وصيانة النظام"},
-    {"name": "bakir-store", "desc": "متجر باكير السيادي لإدارة الأدوات"},
-    {"name": "bakir-killer", "desc": "قناص العمليات: تطهير الزومبي وحماية الرام"},
-    {"name": "bakir-sys", "desc": "مراقب النظام: رادار الرام والمعالج والحرارة"}
+    {
+      "name": "bakir-shield",
+      "desc": "الدرع الأمني المتطور (Rust Edition)"
+    },
+    {
+      "name": "bakir-opt",
+      "desc": "الوحش: الترميم الجراحي وصيانة النظام"
+    },
+    {
+      "name": "bakir-store",
+      "desc": "متجر باكير السيادي لإدارة الأدوات"
+    },
+    {
+      "name": "bakir-killer",
+      "desc": "قناص العمليات: تطهير الزومبي وحماية الرام"
+    },
+    {
+      "name": "bakir-sys",
+      "desc": "مراقب النظام: رادار الرام والمعالج والحرارة"
+    }
+  ],
+  "aesthetics": [
+    {
+      "name": "bakir-aliases",
+      "desc": "الدستور البرمجي: اختصارات الأوامر السيادية"
+    },
+    {
+      "name": "bakir-terminal-theme",
+      "desc": "الهوية البصرية السيادية (Neon Cyan Edition)"
+    }
   ],
   "global_tools": [
-    {"name": "google-chrome", "desc": "متصفح جوجل كروم الرسمي"},
-    {"name": "brave-browser", "desc": "متصفح برايف (الخصوصية المطلقة)"},
-    {"name": "firefox", "desc": "متصفح فيرفكس المستقر"},
-    {"name": "vs-code", "desc": "Visual Studio Code (واجهة برمجة Rust)"},
-    {"name": "timeshift", "desc": "نظام آلة الزمن (استعادة النظام)"},
-    {"name": "gparted", "desc": "أداة تقسيم وإدارة الأقراص الجراحية"},
-    {"name": "vlc", "desc": "مشغل الوسائط VLC الشامل"},
-    {"name": "telegram", "desc": "منصة تليجرام للتواصل الآمن"}
+    {
+      "name": "google-chrome",
+      "desc": "متصفح جوجل كروم الرسمي"
+    },
+    {
+      "name": "brave-browser",
+      "desc": "متصفح برايف (الخصوصية المطلقة)"
+    },
+    {
+      "name": "firefox",
+      "desc": "متصفح فيرفكس المستقر"
+    },
+    {
+      "name": "vs-code",
+      "desc": "Visual Studio Code واجهة برمجة (Rust)"
+    },
+    {
+      "name": "timeshift",
+      "desc": "نظام آلة الزمن (استعادة النظام)"
+    },
+    {
+      "name": "gparted",
+      "desc": "أداة تقسيم وإدارة الأقراص الجراحية"
+    },
+    {
+      "name": "vlc",
+      "desc": "الشامل VLC مشغل الوسائط"
+    },
+    {
+      "name": "telegram",
+      "desc": "منصة تليجرام للتواصل الآمن"
+    }
   ]
 }
