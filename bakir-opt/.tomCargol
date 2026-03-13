@@ -1,0 +1,9 @@
+[package]
+name = "bakir-opt"
+version = "7.1.0"
+edition = "2021"
+authors = ["Bakir"]
+
+[dependencies]
+colored = "2.1.0"
+libc = "0.2"

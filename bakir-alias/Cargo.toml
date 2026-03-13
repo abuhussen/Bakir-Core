@@ -1,0 +1,8 @@
+[package]
+name = "bakir-alias"
+version = "1.0.0"
+edition = "2021"
+authors = ["Bakir"]
+
+[dependencies]
+colored = "2.1.0"

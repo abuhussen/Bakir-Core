@@ -1,0 +1,8 @@
+[package]
+name = "bakir-t-t"
+version = "1.0.1" # تم تحديث الإصدار
+edition = "2021"
+authors = ["Bakir"]
+
+[dependencies]
+colored = "2.1.0"
