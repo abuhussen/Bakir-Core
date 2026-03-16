@@ -1,17 +1,28 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-# التحقق من أن المستخدم يملك صلاحيات الجذر (root)
-if [ "$EUID" -ne 0 ]; then
-  echo "يرجى تشغيل هذا السكربت باستخدام sudo"
-  exit
-fi
+echo "تثبيت أدوات Bakir-Core..."
 
-echo "جاري تثبيت أدوات Bakir..."
+command -v cargo >/dev/null 2>&1 || {
+  echo "تثبيت Rust..."
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+  . "$HOME/.cargo/env"
+}
 
-# نسخ الملفات التنفيذية إلى مسار النظام
-cp bakir-shield bakir-git bakir-opt bakir-t-t bakir-alias /usr/local/bin/
+TMP=$(mktemp -d)
+cd "$TMP"
+curl -L https://github.com/abuhussen/Bakir-Core/archive/refs/heads/main.tar.gz | tar xz --strip-components=1
 
-# إعطاء صلاحيات التشغيل للملفات
-chmod +x /usr/local/bin/bakir-*
+for d in bakir-*; do
+  [ -d "$d" ] || continue
+  [ -f "$d/Cargo.toml" ] || { echo "تحذير: $d بدون Cargo.toml"; continue; }
+  echo "بناء $d..."
+  cd "$d"
+  cargo build --release
+  BIN=$(grep '^name\s*=' Cargo.toml | head -1 | cut -d'"' -f2)
+  sudo install -m755 "target/release/$BIN" "/usr/local/bin/$BIN"
+  cd ..
+done
 
-echo "تم التثبيت بنجاح! يمكنك الآن استخدام الأدوات مباشرة من الترمينال."
+rm -rf "$TMP"
+echo "تم التثبيت!"
