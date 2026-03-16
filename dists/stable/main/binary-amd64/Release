@@ -1,0 +1,7 @@
+Origin: Bakir Linux
+Label: Bakir Repo
+Suite: stable
+Codename: stable
+Architectures: amd64
+Components: main
+Description: Bakir Linux Core Tools Repository
